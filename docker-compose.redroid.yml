@@ -17,7 +17,7 @@ services:
     restart: unless-stopped
 
   bridge:
-    image: ghcr.io/2222221029/audioflow-redroid-bridge:latest
+    image: ghcr.io/workroom2008/audioflow-redroid-bridge:latest
     pull_policy: always
     container_name: audioflow-bridge
     depends_on:

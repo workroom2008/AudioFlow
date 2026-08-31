@@ -7,7 +7,7 @@ AudioFlow是面向 Docker、NAS 和 Web/PWA 的多平台有声书下载工具。
 GitHub Actions 会自动构建 GHCR 镜像：
 
 ```text
-ghcr.io/2222221029/audioflow:latest
+ghcr.io/workroom2008/audioflow:latest
 ```
 
 飞牛 NAS Compose 推荐直接使用镜像部署，示例见 `docker-compose.image.yml`。

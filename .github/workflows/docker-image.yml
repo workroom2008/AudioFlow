@@ -26,7 +26,7 @@ concurrency:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: 2222221029/audioflow
+  IMAGE_NAME: workroom2008/audioflow
 
 jobs:
   build:

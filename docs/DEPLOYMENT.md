@@ -5,13 +5,13 @@
 每次 `main` 分支更新后，GitHub Actions 会自动构建镜像并推送到：
 
 ```text
-ghcr.io/2222221029/audioflow:latest
+ghcr.io/workroom2008/audioflow:latest
 ```
 
 也会同步推送当前版本号标签，例如：
 
 ```text
-ghcr.io/2222221029/audioflow:0.03
+ghcr.io/workroom2008/audioflow:0.03
 ```
 
 飞牛 NAS 的 Compose 建议使用镜像部署，不需要在 NAS 上编译源码：
@@ -19,7 +19,7 @@ ghcr.io/2222221029/audioflow:0.03
 ```yaml
 services:
   audioflow:
-    image: ghcr.io/2222221029/audioflow:latest
+    image: ghcr.io/workroom2008/audioflow:latest
     container_name: audioflow
     restart: unless-stopped
     environment:
@@ -40,7 +40,7 @@ services:
 更新时在飞牛 Compose 页面重新拉取镜像并重新部署。也可以用 SSH：
 
 ```bash
-docker pull ghcr.io/2222221029/audioflow:latest
+docker pull ghcr.io/workroom2008/audioflow:latest
 docker compose up -d
 ```
 
