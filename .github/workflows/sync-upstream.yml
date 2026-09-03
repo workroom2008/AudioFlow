@@ -36,3 +36,9 @@ jobs:
           git rebase upstream/main
           git push origin main --force-with-lease
           echo "🎉 已同步上游更新"
+
+      # 同步后触发 Docker 构建，确保镜像版本与代码一致
+      - name: 触发 Docker 构建
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run "Build Docker image" --ref main
