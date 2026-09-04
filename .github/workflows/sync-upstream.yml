@@ -20,6 +20,7 @@ jobs:
           fetch-depth: 0
 
       - name: Sync upstream
+        id: sync
         run: |
           git config user.name "sync-bot[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -31,15 +32,18 @@ jobs:
 
           if [ "$LOCAL" = "$UPSTREAM" ]; then
             echo "✅ 已是最新，无需同步"
+            echo "synced=false" >> $GITHUB_OUTPUT
             exit 0
           fi
 
           git rebase upstream/main
           git push origin main --force-with-lease
           echo "🎉 已同步上游更新"
+          echo "synced=true" >> $GITHUB_OUTPUT
 
-      # 同步后触发 Docker 构建，确保镜像版本与代码一致
+      # 有更新时才触发 Docker 构建
       - name: 触发 Docker 构建
+        if: steps.sync.outputs.synced == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh workflow run "Build Docker image" --ref main --repo workroom2008/AudioFlow
