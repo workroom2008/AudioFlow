@@ -46,4 +46,4 @@ jobs:
         if: steps.sync.outputs.synced == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh workflow run "Build Docker image" --ref main --repo workroom2008/AudioFlow
+        run: gh workflow run docker-image.yml --ref main --repo workroom2008/AudioFlow
