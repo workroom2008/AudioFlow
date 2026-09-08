@@ -27,10 +27,10 @@ jobs:
           git remote add upstream https://github.com/2222221029/AudioFlow.git || true
           git fetch upstream --tags --force --quiet
 
-          LOCAL=$(git rev-parse main)
           UPSTREAM=$(git rev-parse upstream/main)
 
-          if [ "$LOCAL" = "$UPSTREAM" ]; then
+          # 上游 HEAD 已包含在 main 历史中 = 上游无新提交
+          if git merge-base --is-ancestor "$UPSTREAM" main; then
             echo "✅ 已是最新，无需同步"
             echo "synced=false" >> $GITHUB_OUTPUT
             exit 0
