@@ -39,7 +39,8 @@ jobs:
           VER_BEFORE=$(cat VERSION 2>/dev/null || echo "")
           BEFORE_REBASE=$(git rev-parse main)
 
-          git rebase upstream/main
+          # -X theirs：冲突时保留我们的改动（workflow/README/compose 定制），上游其余改动照常合入
+          git rebase -X theirs upstream/main
 
           # 恢复我们自己的 CI workflows（上游 workflow 不适合 fork，且无 workflows 权限直接推会被拒）
           git checkout $BEFORE_REBASE -- .github/workflows/
