@@ -1,19 +1,7 @@
 name: Build Docker image
 
 on:
-  push:
-    branches:
-      - main
-    # 参考 immich 等项目的做法：只改动文档/资源文件时不触发镜像构建，
-    # 避免无关提交浪费构建时长
-    paths-ignore:
-      - 'README.md'
-      - 'docs/**'
-      - 'assets/**'
-      - 'ACCEPTANCE_REPORT.md'
-      - 'AudioFlow_验收报告.md'
-      - '.gitignore'
-      - '*.md'
+  # 只在版本变化时构建：由 sync-upstream.yml 检测 VERSION 变化后手动触发
   workflow_dispatch:
 
 permissions:
