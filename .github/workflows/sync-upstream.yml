@@ -43,8 +43,10 @@ jobs:
           git rebase -X theirs upstream/main
 
           # 恢复我们自己的 CI workflows（上游 workflow 不适合 fork，且无 workflows 权限直接推会被拒）
+          # 先整目录删除，清掉上游新增的 workflow（如 ci.yml），否则带上去会被 GitHub 拒绝
+          rm -rf .github/workflows
           git checkout $BEFORE_REBASE -- .github/workflows/
-          git add .github/workflows/
+          git add -A .github/workflows/
           git diff --cached --quiet || git commit -m "chore: keep our CI workflows"
 
           git push origin main --force-with-lease
