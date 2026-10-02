@@ -43,9 +43,32 @@ jobs:
           git rebase -X theirs upstream/main
 
           # 恢复我们自己的 CI workflows（上游 workflow 不适合 fork，且无 workflows 权限直接推会被拒）
-          # 先整目录删除，清掉上游新增的 workflow（如 ci.yml），否则带上去会被 GitHub 拒绝
+          # 整目录删除清掉上游 workflow，再按【显式白名单】恢复自有文件。
+          # 不用 "git checkout $BEFORE_REBASE -- .github/workflows/"：那是以上次状态为准，
+          # 一旦历史里混入过上游 workflow 就会被永久继承。白名单以仓库自身为准，与历史无关。
           rm -rf .github/workflows
-          git checkout $BEFORE_REBASE -- .github/workflows/
+          mkdir -p .github/workflows
+          KEEP="docker-image.yml sync-upstream.yml"
+          for f in $KEEP; do
+            if git cat-file -e "$BEFORE_REBASE:.github/workflows/$f" 2>/dev/null; then
+              git show "$BEFORE_REBASE:.github/workflows/$f" > ".github/workflows/$f"
+            else
+              echo "⚠️ 白名单文件在上次提交中缺失: $f"
+            fi
+          done
+          # 安全闸：自有 workflow 必须齐全，否则宁可中止也不推（避免把 fork 的 CI 搞没）
+          MISSING=""
+          for f in $KEEP; do
+            [ -s ".github/workflows/$f" ] || MISSING="$MISSING $f"
+          done
+          if [ -n "$MISSING" ]; then
+            echo "❌ 自有 workflow 缺失:$MISSING —— 中止同步，main 分支未改动"
+            git rebase --abort || true
+            exit 1
+          fi
+          # 意外混入的非白名单文件直接清掉（双保险）
+          find .github/workflows -maxdepth 1 -type f \( -name '*.yml' -o -name '*.yaml' \) \
+            ! -name 'docker-image.yml' ! -name 'sync-upstream.yml' -delete
           git add -A .github/workflows/
           git diff --cached --quiet || git commit -m "chore: keep our CI workflows"
 
