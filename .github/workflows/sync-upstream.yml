@@ -82,4 +82,9 @@ jobs:
           fi
           echo "🎉 已同步上游更新 (VERSION: ${VER_BEFORE:-无} -> ${VER_AFTER:-无})"
           echo "synced=true" >> $GITHUB_OUTPUT
-          # 自动构建已停用（GitHub 账户额度超额）。版本变化时同步只更新代码，不再触发 Docker 构建。
+          # 公开仓额度无限，版本变化时自动触发 Docker 构建
+      - name: Trigger build
+        if: steps.sync.outputs.version_changed == 'true'
+        run: gh workflow run docker-image.yml --ref main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
